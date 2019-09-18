@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { matchesSelectorToParentElements, addEvent, removeEvent } from 'vue-draggable-resizable/src/utils/dom';
+import { matchesSelectorToParentElements, addEvent, removeEvent } from '../utils/dom'
 
 const events = {
   mouse: {
