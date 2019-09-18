@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { matchesSelectorToParentElements, addEvent, removeEvent } from '../utils/dom'
+import { matchesSelectorToParentElements, addEvent, removeEvent } from 'vue-draggable-resizable/src/utils/dom';
 
 const events = {
   mouse: {
@@ -199,6 +199,11 @@ export default {
     onResizeStart: {
       type: Function,
       default: null
+    },
+    rootNode: {
+      default() {
+        return document;
+      } 
     }
   },
 
@@ -253,18 +258,18 @@ export default {
     this.rawRight = this.parentWidth - this.rawWidth - this.rawLeft
     this.rawBottom = this.parentHeight - this.rawHeight - this.rawTop
 
-    addEvent(document.documentElement, 'mousedown', this.deselect)
-    addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    addEvent(this.rootNode.documentElement, 'mousedown', this.deselect)
+    addEvent(this.rootNode.documentElement, 'touchend touchcancel', this.deselect)
 
     addEvent(window, 'resize', this.checkParentSize)
   },
   beforeDestroy: function () {
-    removeEvent(document.documentElement, 'mousedown', this.deselect)
-    removeEvent(document.documentElement, 'touchstart', this.handleUp)
-    removeEvent(document.documentElement, 'mousemove', this.move)
-    removeEvent(document.documentElement, 'touchmove', this.move)
-    removeEvent(document.documentElement, 'mouseup', this.handleUp)
-    removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    removeEvent(this.rootNode.documentElement, 'mousedown', this.deselect)
+    removeEvent(this.rootNode.documentElement, 'touchstart', this.handleUp)
+    removeEvent(this.rootNode.documentElement, 'mousemove', this.move)
+    removeEvent(this.rootNode.documentElement, 'touchmove', this.move)
+    removeEvent(this.rootNode.documentElement, 'mouseup', this.handleUp)
+    removeEvent(this.rootNode.documentElement, 'touchend touchcancel', this.deselect)
 
     removeEvent(window, 'resize', this.checkParentSize)
   },
@@ -353,8 +358,8 @@ export default {
           this.bounds = this.calcDragLimits()
         }
 
-        addEvent(document.documentElement, eventsFor.move, this.move)
-        addEvent(document.documentElement, eventsFor.stop, this.handleUp)
+        addEvent(this.rootNode.documentElement, eventsFor.move, this.move)
+        addEvent(this.rootNode.documentElement, eventsFor.stop, this.handleUp)
       }
     },
     calcDragLimits () {
@@ -381,7 +386,7 @@ export default {
           this.$emit('update:active', false)
         }
 
-        removeEvent(document.documentElement, eventsFor.move, this.handleMove)
+        removeEvent(this.rootNode.documentElement, eventsFor.move, this.handleMove)
       }
 
       this.resetBoundsAndMouseState()
@@ -417,8 +422,8 @@ export default {
 
       this.bounds = this.calcResizeLimits()
 
-      addEvent(document.documentElement, eventsFor.move, this.handleMove)
-      addEvent(document.documentElement, eventsFor.stop, this.handleUp)
+      addEvent(this.rootNode.documentElement, eventsFor.move, this.handleMove)
+      addEvent(this.rootNode.documentElement, eventsFor.stop, this.handleUp)
     },
     calcResizeLimits () {
       let minW = this.minW
@@ -588,7 +593,7 @@ export default {
         this.$emit('dragstop', this.left, this.top)
       }
 
-      removeEvent(document.documentElement, eventsFor.move, this.handleMove)
+      removeEvent(this.rootNode.documentElement, eventsFor.move, this.handleMove)
     },
     snapToGrid (grid, pendingX, pendingY) {
       const x = Math.round(pendingX / grid[0]) * grid[0]
